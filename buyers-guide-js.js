@@ -473,7 +473,7 @@ function openCarDetails(e) {
   let score = $(e).find('[fs-cmsfilter-field="new-green-score"]').html();
   let lineItem = $(el).closest($('.cars-database-collection-item')).html();
   let fuelType = $(e).find('[fs-cmsfilter-field="gc-type"]').html();
-  let inventoryStatus = $(e).find('[gc-data-variable]="inventory_status"').html();
+  let inventoryStatus = $(e).find('[gc-data-variable="inventory_status"]').html();
   if (inventoryStatus < 1){
     $('[gc-element-variable="shop_button"]').prop('disabled', true);
   }
