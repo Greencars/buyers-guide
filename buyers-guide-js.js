@@ -338,7 +338,6 @@ function drawCarDetailRow(args) {
 }
 
 function drawGreenScoreBox(score) {
-  console.log("GC Score " + score);
   let html = '';
   let green = `<img class="big-leaf" src="https://assets-global.website-files.com/6238640c74e61b4d447f965f/623b23057582ddb7fd18e23e_leaf-green.svg" loading="lazy" alt="">`;
   let grey = `<img class="big-leaf" src="https://assets-global.website-files.com/6238640c74e61b4d447f965f/623b22eeb0db51ba54f37df2_leaf-grey.svg" loading="lazy" alt="">`;
@@ -373,7 +372,6 @@ function drawGreenScoreBox(score) {
     html = `n/a`;
     return html;
   }
-  console.log(leafs);
   return (html = `<div class="greenscore-score-box">
                         <div class="score-box-icons-wrapper">${leafs}</div>
                         <div class="score-box-value"><div>${score} out of 5</div></div>
@@ -460,7 +458,6 @@ function isMobileWidth(f) {
 }
 
 function openCarDetails(e) {
-  console.log("opendetails");
   closeAll();
   currentSeletedCar = {};
 
@@ -475,16 +472,15 @@ function openCarDetails(e) {
   let fuelType = $(e).find('[fs-cmsfilter-field="gc-type"]').html();
   let inventoryStatus = $(e).find('[gc-data-variable="inventory_status"]').html();
   if (inventoryStatus < 1){
-    $('[gc-element-variable="shop_button"]').prop('disabled', true);
+    $('[gc-element-variable="shop_button"]').hide();
   }
   console.log("CarUVC is " + id);
   console.log("CarType is " + fuelType);
+  console.log("InventoryStatus is " + inventoryStatus);
   //draw greenbox score
   $('[gc-greenbox="' + id + '"]').empty();
   $('[gc-greenbox="' + id + '"]').append(drawGreenScoreBox(score));
-  if ($('[gc-greenbox="' + id + '"]').length > 0){
-    console.log($('[gc-greenbox="' + id + '"]').length)
-  }
+
   if (fuelType == 'Hybrid' || fuelType == 'Gas'){
     console.log(fuelType);
     $('[gc-data-variable="battery_capacity"]').hide();
