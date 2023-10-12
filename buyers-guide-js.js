@@ -30,10 +30,6 @@ const onChangeElement = (qSelector, cb) => {
   stopwatchEnd(funcId);
 };
 
-/* -----------------------*/
-/* --------METHODS--------*/
-/* -----------------------*/
-
 function getCarName(e) {
   return `${$('[fs-cmsfilter-field="year"]', e).html()} ${$(
     '[fs-cmsfilter-field="brand"]',
@@ -322,7 +318,6 @@ function drawCarEnvironmentScore(data) {
 }
 
 function drawCarDetailRow(args) {
-  console.log("drawcardetailrow");
   let html = '';
   let defaults = { label: '', value: 'n/a', type: '' };
 
@@ -368,7 +363,6 @@ function drawGreenScoreBox(score) {
   } else if (s === 0) {
     leafs = `${grey}${grey}${grey}${grey}${grey}`;
   } else {
-    console.log("ended in else");
     html = `n/a`;
     return html;
   }
@@ -452,7 +446,6 @@ function setCarDetailState(e) {
 }
 
 function isMobileWidth(f) {
-  console.log('Mobile width checked');
   let state = $('#mobile-indicator').is(':visible');
   return state ? true : f();
 }
@@ -469,33 +462,54 @@ function openCarDetails(e) {
   let id = tempIDElement.textContent;
   let score = $(e).find('[fs-cmsfilter-field="new-green-score"]').html();
   let lineItem = $(el).closest($('.cars-database-collection-item')).html();
-  let fuelType = $(e).find('[fs-cmsfilter-field="gc-type"]').html();
   let inventoryStatus = $(e).find('[gc-data-variable="inventory_status"]').html();
+  var customDisabledButtonClass = '.gc-disabled-button { background-color: grey !important; pointer-events: none; }';
+  $('<style>').text(customDisabledButtonClass).appendTo('head');
   if (inventoryStatus < 1){
-    $('[gc-element-variable="shop_button"]').hide();
+    var $link = $('[gc-element-variable="shop_button"]');
+
+    // Prevent the link from being clicked
+    $link.on('click', function(event) {
+      event.preventDefault(); // Prevent the default behavior (opening a new page)
+    });
+    $link.addClass('gc-disabled-button');
   }
-  console.log("CarUVC is " + id);
-  console.log("CarType is " + fuelType);
-  console.log("InventoryStatus is " + inventoryStatus);
+  else{
+    var $link = $('[gc-element-variable="shop_button"]');
+
+    // Prevent the link from being clicked
+    $link.off('click');
+    $link.removeClass('gc-disabled-button');
+  }
+  let year = $(e).find('[gc-data-variable="year"]').html();
+  let make = $(e).find('[gc-data-variable="make"]').html();
+  let model = $(e).find('[gc-data-variable="model"]').html();
+    
+  let label_text = "Vehicle: " + year + " " + make + " " + model;
+  $('[gc-element-variable="contact_us_vehicle_info"]').text(label_text);
+
+  let inputFieldYear = $('input[gc-element-variable="contact_us_year"]');
+  if (inputFieldYear.length > 0) {
+    inputFieldYear.val(year);
+  } else {
+  }
+  let inputFieldMake = $('input[gc-element-variable="contact_us_make"]');
+  if (inputFieldMake.length > 0) {
+    inputFieldMake.val(make);
+  } else {
+  }
+  let inputFieldModel = $('input[gc-element-variable="contact_us_model"]');
+  if (inputFieldModel.length > 0) {
+    inputFieldModel.val(model);
+  } else {
+  }
+  
   //draw greenbox score
   $('[gc-greenbox="' + id + '"]').empty();
   $('[gc-greenbox="' + id + '"]').append(drawGreenScoreBox(score));
-
-  if (fuelType == 'Hybrid' || fuelType == 'Gas'){
-    console.log(fuelType);
-    $('[gc-data-variable="battery_capacity"]').hide();
-    $('[gc-data-variable="time_to_charge_120"]').hide();
-    $('[gc-data-variable="time_to_charge_240"]').hide();
-    $('[gc-data-variable="kwh_per_mile"]').hide();
-    $('[gc-data-label="fuel_efficiency"]').text("MPG")
-  }
-  else {
-    $('[gc-data-variable="battery_capacity"]').show();
-    $('[gc-data-variable="time_to_charge_120"]').show();
-    $('[gc-data-variable="time_to_charge_240"]').show();
-    $('[gc-data-variable="kwh_per_mile"]').show();
-    $('[gc-data-label="fuel_efficiency"]').text("MPGe")
-  }
+  $('[gc-element-variable="contact_us_button"]').on('click', function(){
+    $('[gc-element-variable="contact_us_form_container"]').css('display', 'flex');
+  });
 
   //make visual changes to ui
   el.css('display', 'flex');
@@ -504,7 +518,6 @@ function openCarDetails(e) {
     width: '',
     opacity: 1,
   });
-  //$('.car-details-button-wrapper').show();
 
   //handle global state
   setCarDetailState(e);
@@ -516,7 +529,6 @@ function closeCarDetails() {
   let el = $('[gc-state="true"]').siblings($('.car-card-details'));
 
   //make visual changes to ui
-  //$('.car-details-button-wrapper').hide();
   tram(el).start({
     width: 0,
     opacity: 0,
@@ -530,14 +542,12 @@ function closeAll() {
 }
 
 function collapseDetails() {
-  console.log("collapseDetails");
   $('.gc-accordion').addClass('gc-collapse');
   $('.gc-collapse-btn').text('Expand');
   $('.gc-collapse-btn').removeClass('gc-accordion-expanded');
 }
 
 function expandDetails() {
-  console.log("expandDetails");
   $('.gc-accordion').removeClass('gc-collapse');
   $('.gc-collapse-btn').text('Collapse');
   $('.gc-collapse-btn').addClass('gc-accordion-expanded');
@@ -552,10 +562,6 @@ function handelFilterResults() {
   let results = $('[fs-cmsfilter-element="results-count"]').text();
   $('#results-mobile').text(results);
 }
-
-/* -----------------------*/
-/* -----INIT METHODS----*/
-/* -----------------------*/
 
 function initTram() {
   tram($('.car-card-details')).add('opacity 300ms ease').add('width 300ms ease').set({
@@ -576,7 +582,27 @@ function initCarSingleTab() {
     let state = getCarDetailState(el);
     if (state === 'true') {
       closeAll();
-    } else {
+    } else 
+    {
+      let fuelType = $(el).find('[fs-cmsfilter-field="gc-type"]').html();
+      if (fuelType == 'Hybrid' || fuelType == 'Gas'){
+        $('[gc-data-variable="battery_capacity"]').hide();
+        $('[gc-data-variable="time_to_charge_120"]').hide();
+        $('[gc-data-variable="time_to_charge_240"]').hide();
+        $('[gc-data-variable="electric_range"]').hide();
+        $('[gc-data-variable="kwh_per_mile"]').hide();
+
+        $('[gc-data-label="fuel_efficiency"]').text("MPG")
+      }
+      else {
+        $('[gc-data-variable="battery_capacity"]').show();
+        $('[gc-data-variable="time_to_charge_120"]').show();
+        $('[gc-data-variable="time_to_charge_240"]').show();
+        $('[gc-data-variable="kwh_per_mile"]').show();
+        $('[gc-data-variable="electric_range"]').show();
+        
+        $('[gc-data-label="fuel_efficiency"]').text("MPGe")
+      }
       openCarDetails(el);
     }
   });
@@ -642,13 +668,10 @@ $(document).ready(function () {
     tablet: 'width=978',
   };
   const viewport_set = () => {
-    // console.log('viewport_set');
     if ($(window).width() < 1320 && $(window).width() > 990) {
       viewport_meta.attr('content', viewports.tablet);
-      // console.log('Viewport is in true');
     } else {
       viewport_meta.attr('content', viewports.default);
-      // console.log('Viewport is in false');
     }
   };
 
@@ -656,7 +679,6 @@ $(document).ready(function () {
   /* -----CALL INIT METHODS----*/
   /* -----------------------*/
   initGreenCars();
-  //viewport_set();
 
   /* -----------------------*/
   /* -----EVENT HANDLERS----*/
@@ -665,6 +687,7 @@ $(document).ready(function () {
   $('.gc-close-dropdown').on('click', function () {
     $(this).closest($('.w-dropdown')).trigger('w-close');
     $('#comparing-bar').css('z-index', '10');
+    //initCompareBar();
   });
 
   $('#gc-mobile-filter').on('click', function () {
@@ -747,4 +770,43 @@ function stopwatchStart(funcName) {
 
 function stopwatchEnd(funcName) {
   if (isDebug) console.timeEnd(funcName);
+}
+
+function populateAssumptionsText() {
+    let assumptionselement = $('[gc-element-variable="assumptions_text"]');
+    let miles_driven = $('[gc-data-variable="miles_driven"]');
+    let interest_rate_new = $('[gc-data-variable="interest_rate_new"]');
+    let interest_rate_used = $('[gc-data-variable="interest_rate_used"]');
+    let loan_length = $('[gc-data-variable="loan_length"]');
+    let loan_down_payment = $('[gc-data-variable="loan_down_payment"]');
+    let gas_price = $('[gc-data-variable="gas_price"]');
+    let electricity_price = $('[gc-data-variable="electricity_price"]');
+
+    let assumptions_text = 'Assumptions: ' +
+    miles_driven + ' miles driven annually; ' +
+    loan_length + ' monthly payments; ' + 
+    loan_down_payment + '% down payment, ' + 
+    interest_rate_new + '% interest rate for new vehicles, ' + 
+    interest_rate_used + '% interest rate for used vehicles, does not include incentive savings. Energy costs are ' + 
+    electricity_price + ' kWh and ' + 
+    gas_price + '/gallon of gasoline. ' +
+    'Estimated vehicle prices based on historical pricing data from Driveway.com and the manufacturer suggested retail prices. ' +
+    'Emissions, charge times, and vehicle efficiency based on EPA estimates. PHEVs assume driving time 7% on electricity and 93% on fuel.';
+    // Check if the element exists
+    if (assumptionselement.length > 0) {
+        // Get the text content of the element and assign it to the assumptionsText variable
+        assumptionselement.text(assumptions_text);
+    } else {
+    }
+}
+
+function populateContactUsForm() {
+    let el = $(event.target).closest($('.cars-tab-single-tab'));
+    let year = $(el).find('[cms-filter-field="year"]').html();
+    let make = $(el).find('[cms-filter-field="brand"]').html();
+    let model = $(el).find('[gc-data-variable="model"]').html();
+    
+    let label_text = "Vehicle: " + year + " " + make + " " + model
+    $('[gc-element-variable="contact_us_vehicle_info"]').text(label_text)
+
 }
