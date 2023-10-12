@@ -527,9 +527,11 @@ function openCarDetails(e) {
 function closeCarDetails() {
   //block scope
   let el = $('[gc-state="true"]').siblings($('.car-card-details'));
-
+  
   //make visual changes to ui
+  el.css('display', 'none');
   tram(el).start({
+    display: 'none',
     width: 0,
     opacity: 0,
   });
