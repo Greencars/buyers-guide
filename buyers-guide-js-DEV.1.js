@@ -486,8 +486,9 @@ function openCarDetails(e) {
   let make = $(e).find('[gc-data-variable="make"]').html();
   let model = $(e).find('[gc-data-variable="model"]').html();
 
-  var shop_button = $('[gc-element-variable="shop_button"]');
-  shop_button.text("Shop "+model);
+  let shop_button_text = $('[gc-element-variable="shop_button_text"]');
+  let adjustedModelText = adjustModelText(model);
+  shop_button_text.text("Shop "+ adjustedModelText);
     
   let label_text = "Vehicle: " + year + " " + make + " " + model;
   $('[gc-element-variable="contact_us_vehicle_info"]').text(label_text);
@@ -839,4 +840,22 @@ function populateContactUsForm() {
     let label_text = "Vehicle: " + year + " " + make + " " + model
     $('[gc-element-variable="contact_us_vehicle_info"]').text(label_text)
 
+}
+
+function adjustModelText(model) {
+    var targetLength = 12;
+    var modelLength = model.length;
+
+    if (modelLength < targetLength) {
+        // Calculate the number of spaces to add
+        var totalSpaces = targetLength - modelLength;
+        var spacesOnEachSide = Math.floor(totalSpaces / 2);
+        // Add spaces to each side of the model text
+        model = ' '.repeat(spacesOnEachSide) + model + ' '.repeat(totalSpaces - spacesOnEachSide);
+    } else if (modelLength > targetLength) {
+        // Truncate and add "..."
+        model = model.substring(0, 9) + "...";
+    }
+
+    return model;
 }
