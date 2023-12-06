@@ -465,25 +465,29 @@ function openCarDetails(e) {
   let inventoryStatus = $(e).find('[gc-data-variable="inventory_status"]').html();
   var customDisabledButtonClass = '.gc-disabled-button { background-color: grey !important; pointer-events: none; }';
   $('<style>').text(customDisabledButtonClass).appendTo('head');
-  if (inventoryStatus < 1){
-    var $link = $('[gc-element-variable="shop_button"]');
+  // if (inventoryStatus < 1){
+  //   var $link = $('[gc-element-variable="shop_button"]');
 
-    // Prevent the link from being clicked
-    $link.on('click', function(event) {
-      event.preventDefault(); // Prevent the default behavior (opening a new page)
-    });
-    $link.addClass('gc-disabled-button');
-  }
-  else{
-    var $link = $('[gc-element-variable="shop_button"]');
+  //   // Prevent the link from being clicked
+  //   $link.on('click', function(event) {
+  //     event.preventDefault(); // Prevent the default behavior (opening a new page)
+  //   });
+  //   $link.addClass('gc-disabled-button');
+  // }
+  // else{
+  //   var $link = $('[gc-element-variable="shop_button"]');
 
-    // Prevent the link from being clicked
-    $link.off('click');
-    $link.removeClass('gc-disabled-button');
-  }
+  //   // Prevent the link from being clicked
+  //   $link.off('click');
+  //   $link.removeClass('gc-disabled-button');
+  // }
+
   let year = $(e).find('[gc-data-variable="year"]').html();
   let make = $(e).find('[gc-data-variable="make"]').html();
   let model = $(e).find('[gc-data-variable="model"]').html();
+
+  var shop_button = $('[gc-element-variable="shop_button"]');
+  shop_button.text("Shop "+model);
     
   let label_text = "Vehicle: " + year + " " + make + " " + model;
   $('[gc-element-variable="contact_us_vehicle_info"]').text(label_text);
@@ -504,6 +508,7 @@ function openCarDetails(e) {
   } else {
   }
   populateDrawerAssumptionsText();
+  
   //draw greenbox score
   $('[gc-greenbox="' + id + '"]').empty();
   $('[gc-greenbox="' + id + '"]').append(drawGreenScoreBox(score));
