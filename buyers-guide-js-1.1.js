@@ -465,25 +465,30 @@ function openCarDetails(e) {
   let inventoryStatus = $(e).find('[gc-data-variable="inventory_status"]').html();
   var customDisabledButtonClass = '.gc-disabled-button { background-color: grey !important; pointer-events: none; }';
   $('<style>').text(customDisabledButtonClass).appendTo('head');
-  if (inventoryStatus < 1){
-    var $link = $('[gc-element-variable="shop_button"]');
+  //if (inventoryStatus < 1){
+  //   var $link = $('[gc-element-variable="shop_button"]');
+  //
+  //   // Prevent the link from being clicked
+  //   $link.on('click', function(event) {
+  //     event.preventDefault(); // Prevent the default behavior (opening a new page)
+  //   });
+  //  $link.addClass('gc-disabled-button');
+  // }
+  // else{
+  //   var $link = $('[gc-element-variable="shop_button"]');
+  //
+  //   // Prevent the link from being clicked
+  //   $link.off('click');
+  //   $link.removeClass('gc-disabled-button');
+  // }
 
-    // Prevent the link from being clicked
-    $link.on('click', function(event) {
-      event.preventDefault(); // Prevent the default behavior (opening a new page)
-    });
-    $link.addClass('gc-disabled-button');
-  }
-  else{
-    var $link = $('[gc-element-variable="shop_button"]');
-
-    // Prevent the link from being clicked
-    $link.off('click');
-    $link.removeClass('gc-disabled-button');
-  }
   let year = $(e).find('[gc-data-variable="year"]').html();
   let make = $(e).find('[gc-data-variable="make"]').html();
   let model = $(e).find('[gc-data-variable="model"]').html();
+
+  let shop_button_text = $('[gc-element-variable="shop_button_text"]');
+  let adjustedModelText = adjustModelText(make);
+  shop_button_text.text("Shop "+ adjustedModelText);
     
   let label_text = "Vehicle: " + year + " " + make + " " + model;
   $('[gc-element-variable="contact_us_vehicle_info"]').text(label_text);
@@ -504,6 +509,7 @@ function openCarDetails(e) {
   } else {
   }
   populateDrawerAssumptionsText();
+  
   //draw greenbox score
   $('[gc-greenbox="' + id + '"]').empty();
   $('[gc-greenbox="' + id + '"]').append(drawGreenScoreBox(score));
@@ -834,4 +840,22 @@ function populateContactUsForm() {
     let label_text = "Vehicle: " + year + " " + make + " " + model
     $('[gc-element-variable="contact_us_vehicle_info"]').text(label_text)
 
+}
+
+function adjustModelText(model) {
+    var targetLength = 12;
+    var modelLength = model.length;
+
+    if (modelLength < targetLength) {
+        // Calculate the number of spaces to add
+        var totalSpaces = targetLength - modelLength;
+        var spacesOnEachSide = Math.floor(totalSpaces / 2);
+        // Add spaces to each side of the model text
+        model = ' '.repeat(spacesOnEachSide) + model + ' '.repeat(totalSpaces - spacesOnEachSide);
+    } else if (modelLength > targetLength) {
+        // Truncate and add "..."
+        model = model.substring(0, 9) + "...";
+    }
+
+    return model;
 }
