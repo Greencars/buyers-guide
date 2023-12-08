@@ -465,22 +465,22 @@ function openCarDetails(e) {
   let inventoryStatus = $(e).find('[gc-data-variable="inventory_status"]').html();
   var customDisabledButtonClass = '.gc-disabled-button { background-color: grey !important; pointer-events: none; }';
   $('<style>').text(customDisabledButtonClass).appendTo('head');
-  if (inventoryStatus < 1){
-     var $link = $('[gc-element-variable="shop_button"]');
-
-     // Prevent the link from being clicked
-     $link.on('click', function(event) {
-       event.preventDefault(); // Prevent the default behavior (opening a new page)
-     });
-     $link.addClass('gc-disabled-button');
-   }
-   else{
-     var $link = $('[gc-element-variable="shop_button"]');
-
-     // Prevent the link from being clicked
-     $link.off('click');
-     $link.removeClass('gc-disabled-button');
-   }
+  //if (inventoryStatus < 1){
+  //   var $link = $('[gc-element-variable="shop_button"]');
+  //
+  //   // Prevent the link from being clicked
+  //   $link.on('click', function(event) {
+  //     event.preventDefault(); // Prevent the default behavior (opening a new page)
+  //   });
+  //  $link.addClass('gc-disabled-button');
+  // }
+  // else{
+  //   var $link = $('[gc-element-variable="shop_button"]');
+  //
+  //   // Prevent the link from being clicked
+  //   $link.off('click');
+  //   $link.removeClass('gc-disabled-button');
+  // }
 
   let year = $(e).find('[gc-data-variable="year"]').html();
   let make = $(e).find('[gc-data-variable="make"]').html();
